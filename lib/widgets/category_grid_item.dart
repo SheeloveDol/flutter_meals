@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:meals/models/category.dart';
 
 class CategoryGridItem extends StatelessWidget {
-  const CategoryGridItem({super.key, required this.category});
+  const CategoryGridItem(
+      {super.key, required this.category, required this.onSelectCategory});
 
   final Category category;
 
+  // receives the function to navigate to the meals screen
+  final void Function() onSelectCategory;
+
   @override
   Widget build(BuildContext context) {
-    return InkWell( // InkWell is a Material widget that makes its child interactive (e.g., tappable)
-      onTap: () {},
-      splashColor: Theme.of(context).primaryColor, // splashColor is the color of the splash effect
+    return InkWell(
+      // InkWell is a Material widget that makes its child interactive (e.g., tappable)
+      onTap: onSelectCategory,
+      splashColor: Theme.of(context)
+          .primaryColor, // splashColor is the color of the splash effect
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
