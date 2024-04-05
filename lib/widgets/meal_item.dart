@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:meals/models/meal.dart';
+import 'package:meals/screens/meal_details.dart';
 import 'package:meals/widgets/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MealItem extends StatelessWidget {
-  const MealItem({super.key, required this.meal});
+  const MealItem({super.key, required this.meal, required this.onSelectMeal});
 
   final Meal meal;
+  final Function(Meal) onSelectMeal;
 
   // Getter to get the complexity text from the meal model and return it with the first letter capitalized
   String get complexityText {
@@ -20,6 +22,8 @@ class MealItem extends StatelessWidget {
         meal.affordability.name.substring(1);
   }
 
+  // Instead of handling the navigation in the CategoriesScreen, we handle
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -30,7 +34,10 @@ class MealItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       elevation: 4,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          // Must use an anonymous function to pass the context to the _selectMeal function
+          onSelectMeal(meal);
+        },
         child: Stack(
           children: [
             FadeInImage(
