@@ -26,29 +26,24 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pick a category'),
+    return GridView( // removed the scaffold after adding the bottom navigation bar in the tabs.dart file
+      padding: const EdgeInsets.all(24),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2, // 3:2 aspect ratio for the grid items
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
       ),
-      body: GridView(
-        padding: const EdgeInsets.all(24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2, // 3:2 aspect ratio for the grid items
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-        ),
-        children: [
-          // alternative to using availableCategories.map((category) => CategoryGridItem(category: category)).toList()
-          for (final category in availableCategories)
-            CategoryGridItem(
-                category: category,
-                onSelectCategory: () {
-                  _selectCategory(context,
-                      category); // navigating to the meals screen and using an anonymous function to pass the context
-                }),
-        ],
-      ),
+      children: [
+        // alternative to using availableCategories.map((category) => CategoryGridItem(category: category)).toList()
+        for (final category in availableCategories)
+          CategoryGridItem(
+              category: category,
+              onSelectCategory: () {
+                _selectCategory(context,
+                    category); // navigating to the meals screen and using an anonymous function to pass the context
+              }),
+      ],
     );
   }
 }

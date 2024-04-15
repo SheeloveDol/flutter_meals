@@ -24,13 +24,16 @@ class _TabScreenState extends State<TabScreen> {
     // To dynamically set the displayed page we must do this inside of the build method
     // This is because the build method is called whenever the state changes
     Widget activePage = const CategoriesScreen();
+    var activePageTitle = 'Categories';
 
     if (_selectedPageIndex == 1) {
-      activePage = const MealsScreen(title: 'Your Favorites', meals: []);
+      activePage = const MealsScreen(
+          meals: []); // title is now optional so we don't need to pass it here
+      activePageTitle = 'Favorites';
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('dynamic..'),
+        title: Text(activePageTitle),
       ),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
