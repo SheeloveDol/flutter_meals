@@ -38,6 +38,7 @@ class _TabScreenState extends State<TabScreen> {
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
+        currentIndex: _selectedPageIndex, // To set the active tab
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.set_meal),
