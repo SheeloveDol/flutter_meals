@@ -21,11 +21,23 @@ class _TabScreenState extends State<TabScreen> {
       setState(() {
         _favoriteMeals.remove(meal);
       });
+      _showInfoSnackbar("Meal removed from favorites...");
     } else {
       setState(() {
         _favoriteMeals.add(meal);
       });
+      _showInfoSnackbar("Meal added to favorites...");
     }
+  }
+
+  // Showing a snackbar when a meal is favorited or removed from favorites
+  void _showInfoSnackbar(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   // To dynamically set the page index
@@ -33,7 +45,7 @@ class _TabScreenState extends State<TabScreen> {
 
   void _selectPage(int index) {
     setState(() {
-      _selectedPageIndex = index; 
+      _selectedPageIndex = index;
     });
   }
 
