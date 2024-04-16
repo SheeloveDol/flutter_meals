@@ -50,6 +50,14 @@ class _TabScreenState extends State<TabScreen> {
     });
   }
 
+  // To select between meals screen and filters screen from side drawer
+  void _setScreen(String identifier) {
+    if (identifier == 'filters') {
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // To dynamically set the displayed page we must do this inside of the build method
@@ -70,7 +78,9 @@ class _TabScreenState extends State<TabScreen> {
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
-      drawer: MainDrawer(),
+      drawer: MainDrawer(
+        onSetScreen: _setScreen,
+      ),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
