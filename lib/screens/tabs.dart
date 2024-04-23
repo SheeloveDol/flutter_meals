@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:meals/data/dummy_data.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters_screen.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
+
+// setting initial default filters
+const KInitialFilters = {
+  Filter.glutenFree: false,
+  Filter.lactoseFree: false,
+  Filter.vegetarian: false,
+  Filter.vegan: false,
+};
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -16,6 +25,10 @@ class _TabScreenState extends State<TabScreen> {
   // To add and remove meals from the favorites list
   final List<Meal> _favoriteMeals = [];
 
+  // To store the selected filters
+  Map<Filter, bool> _selectedFilters = KInitialFilters;
+
+// To toggle the favorite status of a meal
   void _toggleFavorite(Meal meal) {
     final mealAlreadyFavorited = _favoriteMeals.contains(meal);
 
@@ -59,20 +72,41 @@ class _TabScreenState extends State<TabScreen> {
     if (identifier == 'filters') {
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => const FiltersScreen(),
+          builder: (ctx) => FiltersScreen(selectedFilters: _selectedFilters,),
         ),
       );
 
-      print(result);
+      // If the result is null, we don't want to change the filters. Otherwise, we update the filters
+      setState(() {
+        _selectedFilters = result ?? KInitialFilters;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // To filter the meals based on the selected filters and then we pass this list to the categories screen to display the meals
+    final availableMeals = dummyMeals.where((meal) {
+      if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
+        return false;
+      }
+      return true;
+    }).toList();
+
     // To dynamically set the displayed page we must do this inside of the build method
     // This is because the build method is called whenever the state changes
     Widget activePage = CategoriesScreen(
       onToggleFavorite: _toggleFavorite,
+      availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
 

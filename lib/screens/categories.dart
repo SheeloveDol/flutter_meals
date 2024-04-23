@@ -6,12 +6,20 @@ import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/category_grid_item.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key, required this.onToggleFavorite});
+  const CategoriesScreen({
+    super.key,
+    required this.onToggleFavorite,
+    required this.availableMeals,
+  });
+
   final void Function(Meal meal) onToggleFavorite;
+  final List<Meal> availableMeals;
+
+
   // Defining function to navigate to the meals screen
   // This function receives the context and the category
   void _selectCategory(BuildContext context, Category category) {
-    final filteredMeals = dummyMeals
+    final filteredMeals = availableMeals
         .where((meal) => meal.categories.contains(category.id))
         .toList();
 
@@ -28,7 +36,8 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView( // removed the scaffold after adding the bottom navigation bar in the tabs.dart file
+    return GridView(
+      // removed the scaffold after adding the bottom navigation bar in the tabs.dart file
       padding: const EdgeInsets.all(24),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

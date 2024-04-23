@@ -9,7 +9,10 @@ enum Filter {
 }
 
 class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({super.key});
+  const FiltersScreen({super.key, required this.selectedFilters});
+
+  // To save the selected filters
+  final Map<Filter, bool> selectedFilters;
 
   @override
   State<FiltersScreen> createState() => _FiltersScreenState();
@@ -21,13 +24,24 @@ class _FiltersScreenState extends State<FiltersScreen> {
   var _vegetarianFilter = false;
   var _veganFilter = false;
 
+  // Because the filters are set in the constructor, they are set in the initState method and we can't use the constructor to set the filters. We use the initState method to set the filters in the state object
+  @override
+  void initState() {
+    super.initState();
+    _glutenFreeFilter = widget.selectedFilters[Filter.glutenFree]!;
+    _lactoseFreeFilter = widget.selectedFilters[Filter.lactoseFree]!;
+    _vegetarianFilter = widget.selectedFilters[Filter.vegetarian]!;
+    _veganFilter = widget.selectedFilters[Filter.vegan]!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Filters'),
         ),
-        body: PopScope( // PopScope allows for custom back navigation and returns data when leaving the screen. In this case, returning the filters data
+        body: PopScope(
+          // PopScope allows for custom back navigation and returns data when leaving the screen. In this case, returning the filters data
           canPop: false,
           onPopInvoked: (bool didPop) {
             if (didPop) return;
