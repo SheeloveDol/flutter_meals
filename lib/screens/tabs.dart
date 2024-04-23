@@ -51,15 +51,19 @@ class _TabScreenState extends State<TabScreen> {
     });
   }
 
-  // To select between meals screen and filters screen from side drawer
-  void _setScreen(String identifier) {
+  // 1. To select between meals screen and filters screen from side drawer
+  // 2. To pass the filters data to the meals screen we turn the _setScreen method into an async method
+  //    and await the result from the Navigator.push method with the new data from the filters screen
+  void _setScreen(String identifier) async {
     Navigator.of(context).pop(); // To close the drawer
     if (identifier == 'filters') {
-      Navigator.of(context).push(
+      final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
           builder: (ctx) => const FiltersScreen(),
         ),
       );
+
+      print(result);
     }
   }
 
