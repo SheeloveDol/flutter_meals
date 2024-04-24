@@ -7,7 +7,7 @@ import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
 
 // setting initial default filters
-const KInitialFilters = {
+const kInitialFilters = {
   Filter.glutenFree: false,
   Filter.lactoseFree: false,
   Filter.vegetarian: false,
@@ -26,7 +26,7 @@ class _TabScreenState extends State<TabScreen> {
   final List<Meal> _favoriteMeals = [];
 
   // To store the selected filters
-  Map<Filter, bool> _selectedFilters = KInitialFilters;
+  Map<Filter, bool> _selectedFilters = kInitialFilters;
 
 // To toggle the favorite status of a meal
   void _toggleFavorite(Meal meal) {
@@ -72,13 +72,15 @@ class _TabScreenState extends State<TabScreen> {
     if (identifier == 'filters') {
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(selectedFilters: _selectedFilters,),
+          builder: (ctx) => FiltersScreen(
+            selectedFilters: _selectedFilters,
+          ),
         ),
       );
 
       // If the result is null, we don't want to change the filters. Otherwise, we update the filters
       setState(() {
-        _selectedFilters = result ?? KInitialFilters;
+        _selectedFilters = result ?? kInitialFilters;
       });
     }
   }
