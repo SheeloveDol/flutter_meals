@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meals/screens/tabs.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Defining the theme for the app in terms of colors and typography
 final theme = ThemeData(
@@ -14,7 +15,12 @@ final theme = ThemeData(
 );
 
 void main() {
-  runApp(const App());
+  runApp(
+    const ProviderScope(
+      // ProviderScope is used with Riverpod and makes the providers available to the app
+      child: App(),
+    ),
+  );
 }
 
 class App extends StatelessWidget {

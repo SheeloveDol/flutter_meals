@@ -5,6 +5,8 @@ import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters_screen.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
+import 'package:meals/providers/meals_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // setting initial default filters
 const kInitialFilters = {
@@ -14,14 +16,17 @@ const kInitialFilters = {
   Filter.vegan: false,
 };
 
-class TabScreen extends StatefulWidget {
+class TabScreen extends ConsumerStatefulWidget {
+  // ConsumerStatefulWidget is used with Riverpod
   const TabScreen({super.key});
 
   @override
-  State<TabScreen> createState() => _TabScreenState();
+  ConsumerState<TabScreen> createState() =>
+      _TabScreenState(); // ConsumerState is used with Riverpod
 }
 
-class _TabScreenState extends State<TabScreen> {
+class _TabScreenState extends ConsumerState<TabScreen> {
+  // ConsumerState is used with Riverpod
   // To add and remove meals from the favorites list
   final List<Meal> _favoriteMeals = [];
 
@@ -88,7 +93,11 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     // To filter the meals based on the selected filters and then we pass this list to the categories screen to display the meals
-    final availableMeals = dummyMeals.where((meal) {
+
+    // 2. using the 'ref' object to read the mealsProvider
+    final meals = ref.watch(mealsProvider); // we use ref.watch to listen to the mealsProvider for changes. If there are changes, the widget will be rebuilt based on the new data.
+
+    final availableMeals = meals.where((meal) { // we use the mealsProvider to get the meals data
       if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
