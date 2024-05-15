@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meals/data/dummy_data.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters_screen.dart';
@@ -27,7 +26,7 @@ class TabScreen extends ConsumerStatefulWidget {
 
 class _TabScreenState extends ConsumerState<TabScreen> {
   // ConsumerState is used with Riverpod
-  // To add and remove meals from the favorites list
+  // To add and remove meals from the favorites list, initialize an empty list
   final List<Meal> _favoriteMeals = [];
 
   // To store the selected filters
