@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meals/models/meal.dart';
+// import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters_screen.dart';
 import 'package:meals/screens/meals.dart';
@@ -7,6 +7,7 @@ import 'package:meals/widgets/main_drawer.dart';
 import 'package:meals/providers/meals_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/providers/favorites_provider.dart';
+import 'package:meals/providers/filters_provider.dart'; // 1. We import the filters_provider.dart file
 
 // setting initial default filters
 const kInitialFilters = {
@@ -31,7 +32,7 @@ class _TabScreenState extends ConsumerState<TabScreen> {
   // final List<Meal> _favoriteMeals = []; <-- we will use the favoriteMealsProvider instead
 
   // To store the selected filters
-  Map<Filter, bool> _selectedFilters = kInitialFilters;
+  // Map<Filter, bool> activeFilters = kInitialFilters; // remove this because we are now using the filtersProvider
 
 // To toggle the favorite status of a meal
   // void _toggleFavorite(Meal meal) {
@@ -75,18 +76,18 @@ class _TabScreenState extends ConsumerState<TabScreen> {
   void _setScreen(String identifier) async {
     Navigator.of(context).pop(); // To close the drawer
     if (identifier == 'filters') {
-      final result = await Navigator.of(context).push<Map<Filter, bool>>(
+      await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(
-            selectedFilters: _selectedFilters,
-          ),
+          builder: (ctx) => const FiltersScreen(
+              // selectedFilters: activeFilters,
+              ),
         ),
       );
 
       // If the result is null, we don't want to change the filters. Otherwise, we update the filters
-      setState(() {
-        _selectedFilters = result ?? kInitialFilters;
-      });
+      // setState(() {
+      //   activeFilters = result ?? kInitialFilters;
+      // });
     }
   }
 
@@ -97,19 +98,20 @@ class _TabScreenState extends ConsumerState<TabScreen> {
     // 2. using the 'ref' object to read the mealsProvider
     final meals = ref.watch(
         mealsProvider); // we use ref.watch to listen to the mealsProvider for changes. If there are changes, the widget will be rebuilt based on the new data.
-
+    final activeFilters =
+        ref.watch(filtersProvider); // 2. read the filters from the provider
     final availableMeals = meals.where((meal) {
       // we use the mealsProvider to get the meals data
-      if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
-      if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+      if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
         return false;
       }
-      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+      if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
         return false;
       }
-      if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
+      if (activeFilters[Filter.vegan]! && !meal.isVegan) {
         return false;
       }
       return true;
@@ -126,7 +128,8 @@ class _TabScreenState extends ConsumerState<TabScreen> {
     if (_selectedPageIndex == 1) {
       final favoriteMeals = ref.watch(favoriteMealsProvider);
       activePage = MealsScreen(
-        meals: favoriteMeals,  // we use the favoriteMealsProvider to get the favorite meals data
+        meals:
+            favoriteMeals, // we use the favoriteMealsProvider to get the favorite meals data
         // onToggleFavorite: _toggleFavorite,
       ); // title is now optional so we don't need to pass it here
       activePageTitle = 'Favorites';

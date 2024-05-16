@@ -29,9 +29,15 @@ class FilterNotifier extends StateNotifier<Map<Filter, bool>> {
       filter: value,
     };
   }
+
+  // Method to set the all the filters when user navigates away from the filters screen
+  void setFilters(Map<Filter, bool> chosenFilters) {
+    state = chosenFilters;
+  }
 }
 
 // Exporting the FilterNotifier class as a provider
-final filterProvider = StateNotifierProvider<FilterNotifier, Map<Filter, bool>>(
+final filtersProvider =
+    StateNotifierProvider<FilterNotifier, Map<Filter, bool>>(
   (ref) => FilterNotifier(),
 );
