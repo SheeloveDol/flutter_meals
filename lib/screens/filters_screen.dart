@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 // setting enum for each of the filters in order to create a map
-enum Filter {
-  glutenFree,
-  lactoseFree,
-  vegetarian,
-  vegan,
-}
+// enum Filter {
+//   glutenFree,
+//   lactoseFree,
+//   vegetarian,
+//   vegan,
+// }
 
 class FiltersScreen extends StatefulWidget {
   const FiltersScreen({super.key, required this.selectedFilters});
