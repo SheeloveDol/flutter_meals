@@ -6,6 +6,7 @@ import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
 import 'package:meals/providers/meals_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals/providers/favorites_provider.dart';
 
 // setting initial default filters
 const kInitialFilters = {
@@ -27,37 +28,37 @@ class TabScreen extends ConsumerStatefulWidget {
 class _TabScreenState extends ConsumerState<TabScreen> {
   // ConsumerState is used with Riverpod
   // To add and remove meals from the favorites list, initialize an empty list
-  final List<Meal> _favoriteMeals = [];
+  // final List<Meal> _favoriteMeals = []; <-- we will use the favoriteMealsProvider instead
 
   // To store the selected filters
   Map<Filter, bool> _selectedFilters = kInitialFilters;
 
 // To toggle the favorite status of a meal
-  void _toggleFavorite(Meal meal) {
-    final mealAlreadyFavorited = _favoriteMeals.contains(meal);
+  // void _toggleFavorite(Meal meal) {
+  //   final mealAlreadyFavorited = _favoriteMeals.contains(meal);
 
-    if (mealAlreadyFavorited) {
-      setState(() {
-        _favoriteMeals.remove(meal);
-      });
-      _showInfoSnackbar("Meal removed from favorites...");
-    } else {
-      setState(() {
-        _favoriteMeals.add(meal);
-      });
-      _showInfoSnackbar("Meal added to favorites...");
-    }
-  }
+  //   if (mealAlreadyFavorited) {
+  //     setState(() {
+  //       _favoriteMeals.remove(meal);
+  //     });
+  //     _showInfoSnackbar("Meal removed from favorites...");
+  //   } else {
+  //     setState(() {
+  //       _favoriteMeals.add(meal);
+  //     });
+  //     _showInfoSnackbar("Meal added to favorites...");
+  //   }
+  // } <-- we will use the favoriteMealsProvider instead
 
   // Showing a snackbar when a meal is favorited or removed from favorites
-  void _showInfoSnackbar(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
+  // void _showInfoSnackbar(String message) {
+  //   ScaffoldMessenger.of(context).clearSnackBars();
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //     ),
+  //   );
+  // }
 
   // To dynamically set the page index
   int _selectedPageIndex = 0;
@@ -94,9 +95,11 @@ class _TabScreenState extends ConsumerState<TabScreen> {
     // To filter the meals based on the selected filters and then we pass this list to the categories screen to display the meals
 
     // 2. using the 'ref' object to read the mealsProvider
-    final meals = ref.watch(mealsProvider); // we use ref.watch to listen to the mealsProvider for changes. If there are changes, the widget will be rebuilt based on the new data.
+    final meals = ref.watch(
+        mealsProvider); // we use ref.watch to listen to the mealsProvider for changes. If there are changes, the widget will be rebuilt based on the new data.
 
-    final availableMeals = meals.where((meal) { // we use the mealsProvider to get the meals data
+    final availableMeals = meals.where((meal) {
+      // we use the mealsProvider to get the meals data
       if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
@@ -115,15 +118,16 @@ class _TabScreenState extends ConsumerState<TabScreen> {
     // To dynamically set the displayed page we must do this inside of the build method
     // This is because the build method is called whenever the state changes
     Widget activePage = CategoriesScreen(
-      onToggleFavorite: _toggleFavorite,
+      // onToggleFavorite: _toggleFavorite,
       availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
 
     if (_selectedPageIndex == 1) {
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
       activePage = MealsScreen(
-        meals: _favoriteMeals,
-        onToggleFavorite: _toggleFavorite,
+        meals: favoriteMeals,  // we use the favoriteMealsProvider to get the favorite meals data
+        // onToggleFavorite: _toggleFavorite,
       ); // title is now optional so we don't need to pass it here
       activePageTitle = 'Favorites';
     }
