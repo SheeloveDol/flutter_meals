@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters_screen.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
-import 'package:meals/providers/meals_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/providers/favorites_provider.dart';
 import 'package:meals/providers/filters_provider.dart'; // 1. We import the filters_provider.dart file
@@ -27,39 +25,6 @@ class TabScreen extends ConsumerStatefulWidget {
 }
 
 class _TabScreenState extends ConsumerState<TabScreen> {
-  // ConsumerState is used with Riverpod
-  // To add and remove meals from the favorites list, initialize an empty list
-  // final List<Meal> _favoriteMeals = []; <-- we will use the favoriteMealsProvider instead
-
-  // To store the selected filters
-  // Map<Filter, bool> activeFilters = kInitialFilters; // remove this because we are now using the filtersProvider
-
-// To toggle the favorite status of a meal
-  // void _toggleFavorite(Meal meal) {
-  //   final mealAlreadyFavorited = _favoriteMeals.contains(meal);
-
-  //   if (mealAlreadyFavorited) {
-  //     setState(() {
-  //       _favoriteMeals.remove(meal);
-  //     });
-  //     _showInfoSnackbar("Meal removed from favorites...");
-  //   } else {
-  //     setState(() {
-  //       _favoriteMeals.add(meal);
-  //     });
-  //     _showInfoSnackbar("Meal added to favorites...");
-  //   }
-  // } <-- we will use the favoriteMealsProvider instead
-
-  // Showing a snackbar when a meal is favorited or removed from favorites
-  // void _showInfoSnackbar(String message) {
-  //   ScaffoldMessenger.of(context).clearSnackBars();
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(message),
-  //     ),
-  //   );
-  // }
 
   // To dynamically set the page index
   int _selectedPageIndex = 0;
@@ -83,44 +48,22 @@ class _TabScreenState extends ConsumerState<TabScreen> {
               ),
         ),
       );
-
-      // If the result is null, we don't want to change the filters. Otherwise, we update the filters
-      // setState(() {
-      //   activeFilters = result ?? kInitialFilters;
-      // });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // To filter the meals based on the selected filters and then we pass this list to the categories screen to display the meals
+    final availableMeals = ref.watch(
+        filteredMealsProvider); // 2. We use the filteredMealsProvider to get the filtered meals data
 
-    // 2. using the 'ref' object to read the mealsProvider
-    final meals = ref.watch(
-        mealsProvider); // we use ref.watch to listen to the mealsProvider for changes. If there are changes, the widget will be rebuilt based on the new data.
-    final activeFilters =
-        ref.watch(filtersProvider); // 2. read the filters from the provider
-    final availableMeals = meals.where((meal) {
-      // we use the mealsProvider to get the meals data
-      if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
-        return false;
-      }
-      if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-        return false;
-      }
-      if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
-        return false;
-      }
-      if (activeFilters[Filter.vegan]! && !meal.isVegan) {
-        return false;
-      }
-      return true;
-    }).toList();
+    // Check if availableMeals is null and display a loading indicator or an empty message
+    if (availableMeals == null) {
+      return const Center(
+        child: CircularProgressIndicator(), // Loading indicator
+      );
+    }
 
-    // To dynamically set the displayed page we must do this inside of the build method
-    // This is because the build method is called whenever the state changes
     Widget activePage = CategoriesScreen(
-      // onToggleFavorite: _toggleFavorite,
       availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
