@@ -15,6 +15,9 @@ class MealDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(favoriteMealsProvider).contains(
+        meal); // 1. We use the favoriteMealsProvider to check if the meal is a favorite
+
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
@@ -23,7 +26,7 @@ class MealDetailsScreen extends ConsumerWidget {
             onPressed: () {
               // onToggleFavorite(meal);
               // this is how we call the toggleMealFavoriteStatus method from the favoriteMealsProvider with the snackbar notification added
-              final wasAdded = ref 
+              final wasAdded = ref
                   .read(favoriteMealsProvider.notifier)
                   .toggleMealFavoriteStatus(meal);
               ScaffoldMessenger.of(context).clearSnackBars();
@@ -35,7 +38,7 @@ class MealDetailsScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.star),
+            icon: Icon(isFavorite ? Icons.star : Icons.star_border),
           ),
         ],
       ),
